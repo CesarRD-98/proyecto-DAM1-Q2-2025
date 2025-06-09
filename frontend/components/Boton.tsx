@@ -1,21 +1,37 @@
+// Boton.tsx - Versión corregida para React Native
 import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-interface PropiedadesBoton extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface PropiedadesBoton {
   children: React.ReactNode;
   alClic: () => void;
-  claseCSS?: string;
+  estilo?: object;
 }
 
-const Boton: React.FC<PropiedadesBoton> = ({ children, alClic, claseCSS, ...otrasProps }) => {
+const Boton: React.FC<PropiedadesBoton> = ({ children, alClic, estilo }) => {
   return (
-    <button
-      onClick={alClic}
-      className={`w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-4 text-lg font-medium transition-colors duration-200 ${claseCSS || ''}`}
-      {...otrasProps}
+    <TouchableOpacity
+      onPress={alClic}
+      style={[styles.boton, estilo]}
     >
-      {children}
-    </button>
+      <Text style={styles.texto}>{children}</Text>
+    </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  boton: {
+    width: '100%',
+    backgroundColor: '#3b82f6', // bg-blue-500
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  texto: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+});
 
 export default Boton;

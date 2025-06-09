@@ -1,19 +1,27 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { Home, Receipt, Wallet, Settings } from 'lucide-react-native'; // librería React Native para lucide
+import { View, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import { Home, Receipt, Wallet, Settings } from 'lucide-react-native';
+
+type PestanaID = 'inicio' | 'transacciones' | 'historial' | 'ajustes';
 
 interface PropiedadesNavegadorPestanasInferior {
-  pestanaActiva: string;
-  setPestanaActiva: (pestana: string) => void;
+  pestanaActiva: PestanaID;
+  setPestanaActiva: (pestana: PestanaID) => void;
 }
 
 interface ElementoPestana {
-  id: string;
+  id: PestanaID;
   etiqueta: string;
   IconoComponente: React.ElementType;
 }
 
-const NavegadorPestanasInferior: React.FC<PropiedadesNavegadorPestanasInferior> = ({ pestanaActiva, setPestanaActiva }) => {
+const NavegadorPestanasInferior: React.FC<PropiedadesNavegadorPestanasInferior> = ({ 
+  pestanaActiva, 
+  setPestanaActiva 
+}) => {
+  const { width } = Dimensions.get('window');
+  const tabWidth = width / 4;
+  
   const pestanas: ElementoPestana[] = [
     { id: 'inicio', etiqueta: 'Inicio', IconoComponente: Home },
     { id: 'transacciones', etiqueta: 'Transacciones', IconoComponente: Receipt },
@@ -21,27 +29,39 @@ const NavegadorPestanasInferior: React.FC<PropiedadesNavegadorPestanasInferior> 
     { id: 'ajustes', etiqueta: 'Ajustes', IconoComponente: Settings }
   ];
 
+  const activeIndex = pestanas.findIndex(tab => tab.id === pestanaActiva);
+  const indicatorPosition = activeIndex * tabWidth + (tabWidth / 2) - 64;
+
   return (
     <View style={styles.container}>
       <View style={styles.pestanasContainer}>
         {pestanas.map((pestana) => {
           const Icono = pestana.IconoComponente;
           const activo = pestanaActiva === pestana.id;
+          
           return (
             <TouchableOpacity
               key={pestana.id}
               onPress={() => setPestanaActiva(pestana.id)}
-              style={[styles.pestana, activo ? styles.activo : styles.inactivo]}
+              style={[styles.pestana, activo && styles.activo]}
+              accessibilityRole="button"
+              accessibilityLabel={pestana.etiqueta}
+              accessibilityState={{ selected: activo }}
             >
-              <Icono size={24} color={activo ? '#3b82f6' : '#9ca3af'} style={{ marginBottom: 4 }} />
-              <Text style={[styles.etiqueta, activo ? styles.textoActivo : styles.textoInactivo]}>
+              <Icono 
+                size={24} 
+                color={activo ? '#3b82f6' : '#9ca3af'} 
+                style={styles.icono} 
+              />
+              <Text style={[styles.etiqueta, activo && styles.textoActivo]}>
                 {pestana.etiqueta}
               </Text>
             </TouchableOpacity>
           );
         })}
       </View>
-      <View style={styles.indicadorContainer}>
+      
+      <View style={[styles.indicadorContainer, { left: indicatorPosition }]}>
         <View style={styles.indicador} />
       </View>
     </View>
@@ -53,43 +73,44 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: '#e5e7eb',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 4,
   },
   pestanasContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',
   },
   pestana: {
     alignItems: 'center',
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 10
+    borderRadius: 10,
   },
   activo: {
     backgroundColor: '#eff6ff',
   },
-  inactivo: {},
+  icono: {
+    marginBottom: 4,
+  },
   etiqueta: {
     fontSize: 12,
     fontWeight: '500',
+    color: '#9ca3af',
   },
   textoActivo: {
     color: '#3b82f6',
   },
-  textoInactivo: {
-    color: '#9ca3af',
-  },
   indicadorContainer: {
-    marginTop: 8,
+    position: 'absolute',
+    bottom: 0,
+    width: 128,
     alignItems: 'center',
   },
   indicador: {
-    width: 128,
-    height: 4,
-    backgroundColor: 'black',
-    borderRadius: 9999,
+    width: 64,
+    height: 3,
+    backgroundColor: '#3b82f6',
+    borderRadius: 2,
   },
 });
 

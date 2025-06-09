@@ -54,9 +54,13 @@ const PantallaAjustes: React.FC<PropiedadesPantallaAjustes> = ({ navegarA }) => 
             </View>
           </View>
 
-          <Boton alClic={() => console.log('Cerrar sesión')} className="bg-red-400">
-            Cerrar sesión
-          </Boton>
+          <Boton
+  alClic={() => console.log('Cerrar sesión')}
+  estilo={{ backgroundColor: '#f87171' }} // bg-red-400
+>
+  Cerrar sesión
+</Boton>
+
         </ScrollView>
       </Tarjeta>
     </View>

@@ -1,28 +1,50 @@
+// Interruptor.tsx - Versión corregida
 import React from 'react';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 
 interface PropiedadesInterruptor {
   estadoActivado: boolean;
   alCambiar: () => void;
-  claseCSS?: string;
+  estilo?: object;
 }
 
-const Interruptor: React.FC<PropiedadesInterruptor> = ({ estadoActivado, alCambiar, claseCSS }) => {
+const Interruptor: React.FC<PropiedadesInterruptor> = ({ estadoActivado, alCambiar, estilo }) => {
   return (
-    <button
-      onClick={alCambiar}
-      className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ease-in-out focus:outline-none ${
-        estadoActivado ? 'bg-blue-500' : 'bg-gray-200'
-      } ${claseCSS || ''}`}
-      role="switch"
-      aria-checked={estadoActivado}
+    <TouchableOpacity 
+      onPress={alCambiar}
+      style={[styles.contenedor, estadoActivado ? styles.activado : styles.desactivado, estilo]}
     >
-      <span
-        className={`inline-block w-4 h-4 transform rounded-full bg-white transition-transform duration-200 ease-in-out ${
-          estadoActivado ? 'translate-x-6' : 'translate-x-1'
-        }`}
-      />
-    </button>
+      <View style={[styles.circulo, estadoActivado ? styles.circuloActivado : styles.circuloDesactivado]} />
+    </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  contenedor: {
+    width: 50,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    padding: 2,
+  },
+  activado: {
+    backgroundColor: '#3b82f6', // blue-500
+  },
+  desactivado: {
+    backgroundColor: '#e5e7eb', // gray-200
+  },
+  circulo: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'white',
+  },
+  circuloActivado: {
+    alignSelf: 'flex-end',
+  },
+  circuloDesactivado: {
+    alignSelf: 'flex-start',
+  },
+});
 
 export default Interruptor;
