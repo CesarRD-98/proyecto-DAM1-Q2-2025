@@ -1,18 +1,35 @@
 import React from 'react';
+import { TextInput, StyleSheet, TextInputProps } from 'react-native';
 
-interface PropiedadesAreaTexto extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface PropiedadesAreaTexto extends TextInputProps {
   textoGuia?: string;
-  claseCSS?: string;
+  estilo?: object;
 }
 
-const AreaTexto: React.FC<PropiedadesAreaTexto> = ({ textoGuia, claseCSS, ...otrasProps }) => {
+const AreaTexto: React.FC<PropiedadesAreaTexto> = ({ textoGuia, estilo, ...props }) => {
   return (
-    <textarea
+    <TextInput
       placeholder={textoGuia}
-      className={`bg-blue-50 border-none rounded-lg p-4 text-gray-600 placeholder-gray-500 w-full min-h-[120px] resize-none mb-3 ${claseCSS || ''}`}
-      {...otrasProps}
-    ></textarea>
+      style={[styles.areaTexto, estilo]}
+      multiline
+      numberOfLines={4}
+      textAlignVertical="top"
+      placeholderTextColor="#6b7280"
+      {...props}
+    />
   );
 };
+
+const styles = StyleSheet.create({
+  areaTexto: {
+    backgroundColor: '#bfdbfe',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    color: '#374151',
+    marginBottom: 12,
+    minHeight: 100,
+  },
+});
 
 export default AreaTexto;

@@ -1,18 +1,32 @@
 import React from 'react';
+import { TextInput, StyleSheet, TextInputProps } from 'react-native';
 
-interface PropiedadesEntrada extends React.InputHTMLAttributes<HTMLInputElement> {
+interface PropiedadesEntrada extends TextInputProps {
   textoGuia?: string;
-  claseCSS?: string;
+  estilo?: object;
 }
 
-const Entrada: React.FC<PropiedadesEntrada> = ({ textoGuia, claseCSS, ...otrasProps }) => {
+const Entrada: React.FC<PropiedadesEntrada> = ({ textoGuia, estilo, ...props }) => {
   return (
-    <input
+    <TextInput
       placeholder={textoGuia}
-      className={`bg-blue-50 border-none rounded-lg p-4 text-gray-600 placeholder-gray-500 w-full mb-3 ${claseCSS || ''}`}
-      {...otrasProps}
+      style={[styles.entrada, estilo]}
+      placeholderTextColor="#6b7280" 
+      {...props}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  entrada: {
+    backgroundColor: '#bfdbfe', 
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#374151', 
+    marginBottom: 12,
+  },
+});
 
 export default Entrada;

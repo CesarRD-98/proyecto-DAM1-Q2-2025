@@ -1,21 +1,47 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import BottomTabsNavigator from './components/BottomTabsNavigator';
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 
-export default function App() {
+import NavegadorPestanasInferior from './Navigation/BottomTabsNavigator';
+import PantallaInicio from './screens/inicio';
+import PantallaTransaccion from './screens/transaccion';
+import PantallaAjustes from './screens/ajustes';
+import PantallaHistorialGastos from './screens/gastos';
+
+const App: React.FC = () => {
+  const [pestanaActiva, setPestanaActiva] = useState<string>('transacciones');
+
+  const renderizarPantalla = () => {
+    switch (pestanaActiva) {
+      case 'inicio':
+        return <PantallaInicio />;
+      case 'transacciones':
+        return <PantallaTransaccion navegarA={setPestanaActiva} />;
+      case 'historial':
+        return <PantallaHistorialGastos navegarA={setPestanaActiva} />;
+      case 'ajustes':
+        return <PantallaAjustes navegarA={setPestanaActiva} />;
+      default:
+        return <PantallaInicio />;
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        {/* Maneja la navegacion de pestañas */}
-        <BottomTabsNavigator /> 
-      </View>
-    </SafeAreaView>
+    <View style={styles.contenedor}>
+      <View style={styles.contenido}>{renderizarPantalla()}</View>
+      <NavegadorPestanasInferior pestanaActiva={pestanaActiva} setPestanaActiva={setPestanaActiva} />
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
+  contenedor: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+  },
+  contenido: {
+    flex: 1,
+    overflow: 'hidden', 
   },
 });
+
+export default App;
