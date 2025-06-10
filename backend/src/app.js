@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const categoriaRouter = require('./routers/categoria.router')
 const usuarioRouter = require('./routers/usuario.router')
 const autenticacionRouter = require('./routers/autenticacion.router')
@@ -7,6 +8,7 @@ const gastoRouter = require('./routers/gasto.router')
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 // rutas 
 app.use(categoriaRouter) // => da acceso a rutas sobre categorias

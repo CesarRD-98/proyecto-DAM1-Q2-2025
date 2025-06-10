@@ -18,7 +18,7 @@ async function authUsuario(req, res) {
         const comparePass = await bcrypt.compare(contrasena, usuario.contrasena)
 
         if (!comparePass) {
-            return response.error(res, 400, 'Correo y/o contraseña incorrecta')
+            return response.error(res, 401, 'Correo y/o contraseña incorrecta')
         }
 
         const token = generateToken({
@@ -60,7 +60,7 @@ async function registerUsuario(req, res) {
 
         if (usuarioExistente) {
             await t.rollback()
-            return response.error(res, 404, 'El correo ya está registrado')
+            return response.error(res, 409, 'El correo ya está registrado')
         }
 
         const contrasenaHash = await bcrypt.hash(contrasena, 10)
@@ -81,7 +81,7 @@ async function registerUsuario(req, res) {
 
         if (!nuevoUsuario) {
             await t.rollback()
-            return response.error(res, 401, 'Error en el registro')
+            return response.error(res, 400, 'Error en el registro')
         }
 
         await t.commit()

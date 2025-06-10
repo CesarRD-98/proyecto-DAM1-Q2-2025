@@ -20,7 +20,7 @@ async function createGasto(req, res) {
 
         if (isNaN(monto) || monto < 0) {
             await t.rollback()
-            return response.error(res, 401, 'Monto inválido')
+            return response.error(res, 400, 'Monto inválido')
         }
 
         const montoValidado = parseFloat(

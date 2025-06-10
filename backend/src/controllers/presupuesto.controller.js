@@ -13,7 +13,7 @@ async function addPresupuesto(req, res) {
         }
 
         if (isNaN(monto) || monto < 0) {
-            return response.error(res, 401, 'Monto inválido')
+            return response.error(res, 400, 'Monto inválido')
         }
 
         presupuesto_usuario.monto = parseFloat(
