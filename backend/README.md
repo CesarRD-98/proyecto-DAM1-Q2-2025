@@ -46,7 +46,7 @@ Copia el archivo `.envexample` a `.env` y completa los valores:
 
 ```env
 PORT = 5000
-DB_HOST = localhost
+DB_HOST = 127.0.0.1
 DB_USER = root
 DB_PASSWORD = tu_contrasena
 DB_DATABASE = mipistohn_db

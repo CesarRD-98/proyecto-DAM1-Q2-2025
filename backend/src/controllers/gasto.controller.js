@@ -34,15 +34,7 @@ async function createGasto(req, res) {
             codigo_categoria,
             monto: montoValidado,
             notas: notas || ''
-
         }, { transaction: t })
-
-        if (parseFloat(presupuesto.monto) <= 0) {
-            response.success(res, 'Has superado tu presupuesto establecido', {
-                superado: true,
-                excedente: montoValidado
-            })
-        }
 
         presupuesto.monto = parseFloat(
             (parseFloat(presupuesto.monto) - montoValidado).toFixed(2)
@@ -50,6 +42,13 @@ async function createGasto(req, res) {
 
         await presupuesto.save({ transaction: t })
         await t.commit()
+
+        if (parseFloat(presupuesto.monto) <= 0) {
+            return response.success(res, 'Has superado tu presupuesto establecido', {
+                superado: true,
+                excedente: montoValidado
+            })
+        }
 
         response.success(res, 'Gasto guardado correctamente', {
             id: nuevo_gasto.id_usuario,

@@ -3,11 +3,16 @@ const { Usuario, Presupuesto } = require('../models/asociaciones.model')
 const response = require('../utils/response.util')
 const generateToken = require('../utils/generateToken.util')
 const sequelize = require('../config/db')
+const validateEmail = require('../utils/isEmail.util')
 
 // autenticacion al iniciar sesion
 async function authUsuario(req, res) {
     try {
         const { correo, contrasena } = req.body
+
+        if (!validateEmail(correo)) {
+            return response.error(res, 401, 'Correo no válido')
+        }
 
         const usuario = await Usuario.findOne({ where: { correo_electronico: correo } })
 
@@ -52,6 +57,10 @@ async function registerUsuario(req, res) {
             correo,
             contrasena
         } = req.body
+
+        if (!validateEmail(correo)) {
+            return response.error(res, 401, 'Correo no válido')
+        }
 
         const usuarioExistente = await Usuario.findOne({
             where: { correo_electronico: correo },
