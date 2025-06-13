@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform, Dimensions, StatusBar, StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -7,10 +7,23 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthStack from './navigation/authStack';
 import BottomTabs from './navigation/bottomTabs';
 import InicioSesionProvider from './providers/inicioSesionProvider';
+import { getToken } from './utils/tokenStorage';
 
 export default function App() {
-  // Simulación de login (esto luego será dinámico con contexto o JWT)
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+
+  useEffect(()=> {
+   const loadToken = async () => {
+    const storedToken = await getToken()
+    if (storedToken) {
+      setIsAuthenticated(true)
+    } else {
+      setIsAuthenticated(false)
+    }
+   } 
+   loadToken()
+  }, [])
 
   return (
     <SafeAreaProvider>

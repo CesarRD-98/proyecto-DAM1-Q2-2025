@@ -37,7 +37,7 @@ export default function InicioSesionScreen({ navigation }: Props) {
       Alert.alert('Error', `${message}`)
       return
     }
-    navigation.navigate('Tabs');
+    // navigation.navigate('Tabs');
   };
 
   return (

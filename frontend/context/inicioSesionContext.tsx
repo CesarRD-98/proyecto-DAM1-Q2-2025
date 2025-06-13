@@ -6,5 +6,5 @@ interface InicioSesionType {
 }
 
 export const InicioSesionContext = createContext<InicioSesionType>({
-    login: async () => ({success: false, status: 400, message: 'No definido'})
+    login: async () => ({success: false, status: 400, message: 'No definido'}),
 })
