@@ -1,21 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import BottomTabsNavigator from './components/BottomTabsNavigator';
+import React, { useState } from 'react';
+import { Platform, Dimensions, StatusBar, StyleSheet, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+
+import AuthStack from './navigation/authStack';
+import BottomTabs from './navigation/bottomTabs';
+import InicioSesionProvider from './providers/inicioSesionProvider';
 
 export default function App() {
+  // Simulación de login (esto luego será dinámico con contexto o JWT)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaProvider>
       <View style={styles.container}>
-        {/* Maneja la navegacion de pestañas */}
-        <BottomTabsNavigator /> 
+        {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
+        <NavigationContainer>
+          <InicioSesionProvider>
+            {isAuthenticated ? <BottomTabs /> : <AuthStack />}
+          </InicioSesionProvider>
+        </NavigationContainer>
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    minHeight: Platform.OS === 'web' ? Dimensions.get('window').height : undefined
   },
 });
+

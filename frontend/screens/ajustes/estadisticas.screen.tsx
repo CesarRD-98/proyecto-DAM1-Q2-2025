@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function Inicio() {
+export default function EstadisticasScreen() {
   return (
     <View>
-      <Text>Inicio de MiPistoHN</Text>
+      <Text>EstadisticasScreen</Text>
     </View>
   )
 }
