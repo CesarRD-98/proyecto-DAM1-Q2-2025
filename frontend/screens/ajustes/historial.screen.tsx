@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function Transaccion() {
+export default function HistorialScreen() {
   return (
     <View>
-      <Text>Transaccion</Text>
+      <Text>HistorialScreen</Text>
     </View>
   )
 }
