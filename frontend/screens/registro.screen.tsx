@@ -1,87 +1,136 @@
-import { 
-  View, 
-  Text, 
+import {
+  View,
+  Text,
   Alert,
-  TouchableOpacity, 
+  TouchableOpacity,
   TextInput,
   StyleSheet,
-  Platform
+  Platform,
+  KeyboardAvoidingView,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { authStackParamList } from '../navigation/authStack';
+import { isEmail } from '../utils/isEmail';
+import { registroUsuario } from '../services/registroUsuario';
 
 type Props = NativeStackScreenProps<authStackParamList, 'Registro'>
 
-export default function RegistroScreen({navigation}: Props) {
-  const [nombre, setNombre] = useState('');
+export default function RegistroScreen({ navigation }: Props) {
+  const [name, setName] = useState('');
+  const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
-  const [contrasena, setContrasena] = useState('');
+  const [password, setPassworod] = useState('');
 
-  const handleRegister = () => {
-    if (nombre && email && contrasena) {
-      Alert.alert('Registro Exitoso (simulado)', `Nombre: ${nombre}`);
-      navigation.navigate('InicioSesion');
-    } else {
-      Alert.alert('Error', 'Todos los campos son obligatorios.');
-    }
+  const handleRegister = async () => {
+    const campos = [
+      { label: 'Nombre', value: name },
+      { label: 'Apellido', value: lastname },
+      { label: 'Correo electrónico', value: email },
+      { label: 'Contraseña', value: password }
+    ]
+
+    const campoVacio = campos.find(c => !c.value.trim())
+    if (campoVacio) return Alert.alert('Alerta', `El campo ${campoVacio.label} es obligatorio`)
+    if (!isEmail(email)) return Alert.alert('Alerta', 'Ingrese un correo válido')
+    if (password.length < 8) return Alert.alert('Alerta', 'Su contraseña debe tener al menos 8 caracteres')
+
+    const { success, message } = await registroUsuario(
+      name,
+      lastname,
+      email,
+      password
+    )
+
+    if (!success) return Alert.alert('Alerta', message)
+    Alert.alert('Éxito', message)
+
+    navigation.navigate('InicioSesion');
   };
+
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Ionicons name="arrow-back-outline" size={28} color="#6B7280" />
       </TouchableOpacity>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
 
-      <Text style={styles.title}>Crea tu cuenta</Text>
-      <Text style={styles.subtitle}>¡Bienvenido a MiPistoHN!</Text>
+            <Text style={styles.title}>Crea tu cuenta</Text>
+            <Text style={styles.subtitle}>¡Bienvenido a MiPistoHN!</Text>
 
-      <Text style={styles.label}>Nombre</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Tu nombre completo"
-        value={nombre}
-        onChangeText={setNombre}
-      />
+            <Text style={styles.label}>Nombre:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Tu primer nombre"
+              value={name}
+              onChangeText={setName}
+            />
 
-      <Text style={styles.label}>Correo electrónico</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="correo@ejemplo.com"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
+            <Text style={styles.label}>Apellido:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Tu primer apellido"
+              value={lastname}
+              onChangeText={setLastname}
+            />
 
-      <Text style={styles.label}>Contraseña</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="••••••••"
-        secureTextEntry
-        value={contrasena}
-        onChangeText={setContrasena}
-      />
+            <Text style={styles.label}>Correo electrónico:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="correo@ejemplo.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
+            />
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
-        <Text style={styles.loginButtonText}>Registrarse</Text>
-      </TouchableOpacity>
+            <Text style={styles.label}>Contraseña:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingresa una contraseña"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassworod}
+            />
 
-      <View style={styles.signupPrompt}>
-        <Text style={styles.signupText}>¿Ya tienes una cuenta?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('InicioSesion')}>
-          <Text style={styles.signupLink}> Inicia Sesión</Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity style={styles.loginButton} onPress={handleRegister}>
+              <Text style={styles.loginButtonText}>Registrarse</Text>
+            </TouchableOpacity>
+
+            <View style={styles.signupPrompt}>
+              <Text style={styles.signupText}>¿Ya tienes una cuenta?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('InicioSesion')}>
+                <Text style={styles.signupLink}> Inicia Sesión</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
 
+
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 25,
+    flexGrow: 1,
     backgroundColor: '#F3F4F6',
     alignItems: 'center',
   },

@@ -1,5 +1,10 @@
 import { createContext } from "react";
+import { LoginResponse } from "../models/loginResponse";
 
-export const InicioSesionContext = createContext({
-    login: async (correo: string, contrasena: string) => false
+interface InicioSesionType {
+    login: (correo: string, contrasena: string) => Promise<LoginResponse>
+}
+
+export const InicioSesionContext = createContext<InicioSesionType>({
+    login: async () => ({success: false, status: 400, message: 'No definido'})
 })
