@@ -1,98 +1,108 @@
-import { Dimensions, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native'
+import { Dimensions, Text, StyleSheet, TouchableOpacity, Platform, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { FontAwesome } from '@expo/vector-icons';
-import { authStackParamList } from '../navigation/authStack';
+import { NativeStackScreenProps } from "@react-navigation/native-stack"
+import { FontAwesome } from '@expo/vector-icons'
+import { authStackParamList } from '../navigation/authStack'
 
-type Props = NativeStackScreenProps<authStackParamList, 'Bienvenida'>;
+type Props = NativeStackScreenProps<authStackParamList, 'Bienvenida'>
 
-export default function BienvenidaScreen({navigation}: Props) {
+export default function BienvenidaScreen({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.container}>
-      <FontAwesome name="money" size={70} color="#34D399" />
-      <Text style={styles.logoText}>MiPistoHN</Text>
+      <View style={styles.header}>
+        <FontAwesome name="money" size={70} color="#fff" />
+        <Text style={styles.logoText}>MiPistoHN</Text>
+      </View>
 
-      <Text style={styles.tagline}>
-        Administra tus finanzas fácilmente y sin complicaciones.
-      </Text>
-
-      <TouchableOpacity
-        style={[styles.button, styles.primaryButton]}
-        onPress={() => navigation.navigate('Registro')}
-      >
-        <Text style={styles.buttonText}>Regístrate</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.button, styles.secondaryButton]}
-        onPress={() => navigation.navigate('InicioSesion')}
-      >
-        <Text style={[styles.buttonText, styles.secondaryButtonText]}>
-          Iniciar Sesión
+      <View style={styles.body}>
+        <Text style={styles.tagline}>
+          Administra tus finanzas fácilmente y sin complicaciones.
         </Text>
-      </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.primaryButton]}
+          onPress={() => navigation.navigate('Registro')}
+        >
+          <Text style={styles.primaryButtonText}>Regístrate</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.secondaryButton]}
+          onPress={() => navigation.navigate('InicioSesion')}
+        >
+          <Text style={styles.secondaryButtonText}>Iniciar Sesión</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
     backgroundColor: '#FFFFFF',
     minHeight: Platform.OS === 'web' ? Dimensions.get('window').height : undefined,
   },
+  header: {
+    backgroundColor: '#34D399',
+    height: '30%',
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   logoText: {
-    fontSize: 48,
-    fontWeight: '900',
-    color: '#34D399',
-    marginBottom: 10,
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#fff',
+    marginTop: 10,
     letterSpacing: -1,
-    fontFamily: Platform.OS === 'web' ? 'Arial, sans-serif' : 'System',
+  },
+  body: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 30,
+    marginTop: 80
   },
   tagline: {
     fontSize: 18,
     textAlign: 'center',
-    marginHorizontal: 30,
-    marginBottom: 50,
-    color: '#6B7280',
-    lineHeight: 24,
+    color: '#4B5563',
+    marginBottom: 40,
+    lineHeight: 26,
+    fontWeight: '500',
   },
   button: {
-    width: '80%',
+    width: '100%',
     maxWidth: 300,
-    paddingVertical: 15,
-    borderRadius: 10,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   primaryButton: {
     backgroundColor: '#34D399',
+    elevation: 4,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  primaryButtonText: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
   },
   secondaryButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
     borderWidth: 2,
     borderColor: '#34D399',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
   },
   secondaryButtonText: {
+    fontSize: 18,
     color: '#34D399',
+    fontWeight: 'bold',
   },
-});
+})

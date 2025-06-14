@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import InicioScreen from "../screens/inicio.screen"
-import TransaccionScreen from "../screens/transaccion.screen"
-import PresupuestoScreen from "../screens/presupuesto.screen"
-import AjustesScreen from "../screens/ajustes/ajustes.screen"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import { Ionicons } from "@expo/vector-icons"
+import InicioScreen from "../screens/main/inicio.screen";
+import GastoScreen from "../screens/main/gasto.screen";
+import PresupuestoScreen from "../screens/main/presupuesto.screen";
+import AjustesNavigator from "./ajustesNavigator";
 
 const Tabs = createBottomTabNavigator()
 export default function BottomTabs() {
@@ -26,8 +26,8 @@ export default function BottomTabs() {
           switch (route.name) {
             case 'Inicio':
               return <Ionicons name='home-outline' size={size} color={color} />;
-            case 'Transacciones':
-              return <MaterialCommunityIcons name='swap-horizontal' size={size} color={color} />;
+            case 'Nuevo gasto':
+              return <Ionicons name='add-circle-outline' size={size} color={color} />;
             case 'Presupuesto':
               return <Ionicons name='pie-chart-outline' size={size} color={color} />;
             case 'Ajustes':
@@ -39,9 +39,9 @@ export default function BottomTabs() {
       })}
     >
       <Tabs.Screen name="Inicio" component={InicioScreen} />
-      <Tabs.Screen name="Transacciones" component={TransaccionScreen}/>
+      <Tabs.Screen name="Nuevo gasto" component={GastoScreen}/>
       <Tabs.Screen name="Presupuesto" component={PresupuestoScreen}/>
-      <Tabs.Screen name="Ajustes" component={AjustesScreen}/>
+      <Tabs.Screen name="Ajustes" component={AjustesNavigator}/>
     </Tabs.Navigator>
   )
 }
