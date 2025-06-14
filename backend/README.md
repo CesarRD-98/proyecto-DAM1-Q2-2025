@@ -92,9 +92,8 @@ JWT_SECRET = jwt_secret_123
   _Headers:_ `Authorization: Bearer <token>`  
   _Respuesta:_ `{ usuario, presupuesto, ultimos_gastos }`
 
-- **GET** `/perfil-imagen`  
-  _Headers:_ `Authorization: Bearer <token>`  
-  _Respuesta:_ `{ default.png }`
+- **GET** `/perfil-imagen/:id`  
+  _Respuesta:_ `{ url }`
 
 - **PUT** `/perfil-imagen`  
   _Headers:_ `Authorization: Bearer <token>`  

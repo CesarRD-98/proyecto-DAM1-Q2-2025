@@ -13,24 +13,33 @@ import React, { useState } from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { authStackParamList } from '../navigation/authStack'
 import { Ionicons } from '@expo/vector-icons'
-import { useInicioSesionContext } from '../providers/inicioSesionProvider'
+import { isEmail } from '../utils/isEmail'
+import { useAuth } from '../providers/authProvider'
 
 type Props = NativeStackScreenProps<authStackParamList, 'InicioSesion'>
 export default function InicioSesionScreen({ navigation }: Props) {
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useInicioSesionContext()
+  const { login, refreshUser } = useAuth()
 
-  const handleLogin = () => {
+
+  const handleLogin = async () => {
     if (!email.trim() && !password.trim()) {
       return Alert.alert('Error', 'Por favor, ingrese su email y contraseña.');
     }
 
-    const res = login(email, password)
+    if (!isEmail(email)) return Alert.alert('Error', 'Ingrese un correo válido')
 
-    if (!res) return Alert.alert('Error', 'No esta registrado')
-    navigation.navigate('Tabs');
+    const { success, message } = await login(email, password)
+
+    if (!success) {
+      Alert.alert('Error', `${message}`)
+      return
+    }
+    await refreshUser()
   };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Botón de volver */}
@@ -54,18 +63,18 @@ export default function InicioSesionScreen({ navigation }: Props) {
       <Text style={styles.label}>Contraseña</Text>
       <TextInput
         style={styles.input}
-        placeholder="••••••••"
+        placeholder="Tú contraseña"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.forgotPasswordButton}
         onPress={() => Alert.alert('Recuperar Contraseña', 'Funcionalidad pendiente.')}
       >
         <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
