@@ -13,15 +13,15 @@ import React, { useState } from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { authStackParamList } from '../navigation/authStack'
 import { Ionicons } from '@expo/vector-icons'
-import { useInicioSesionContext } from '../providers/inicioSesionProvider'
 import { isEmail } from '../utils/isEmail'
+import { useAuth } from '../providers/authProvider'
 
 type Props = NativeStackScreenProps<authStackParamList, 'InicioSesion'>
 export default function InicioSesionScreen({ navigation }: Props) {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useInicioSesionContext()
+  const { login, refreshUser } = useAuth()
 
 
   const handleLogin = async () => {
@@ -37,7 +37,7 @@ export default function InicioSesionScreen({ navigation }: Props) {
       Alert.alert('Error', `${message}`)
       return
     }
-    // navigation.navigate('Tabs');
+    await refreshUser()
   };
 
   return (

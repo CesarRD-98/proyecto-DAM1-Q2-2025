@@ -13,7 +13,6 @@ const verifyToken = (req, res, next) => {
     try {
         const decodificado = jwt.verify(tokenLimpio, process.env.JWT_SECRET)
         req.usuario = decodificado
-        
         next()
     } catch (error) {
         return response.error(res, 401, 'Token inválido o expirado')

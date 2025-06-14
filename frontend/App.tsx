@@ -1,38 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Platform, Dimensions, StatusBar, StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-
 import AuthStack from './navigation/authStack';
 import BottomTabs from './navigation/bottomTabs';
-import InicioSesionProvider from './providers/inicioSesionProvider';
-import { getToken } from './utils/tokenStorage';
+import AuthProvider, { useAuth } from './providers/authProvider';
 
 export default function App() {
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-
-  useEffect(()=> {
-   const loadToken = async () => {
-    const storedToken = await getToken()
-    if (storedToken) {
-      setIsAuthenticated(true)
-    } else {
-      setIsAuthenticated(false)
-    }
-   } 
-   loadToken()
-  }, [])
+  function AppContent() {
+    const { isAuthenticated, isLoading } = useAuth()
+    if (isLoading) return <View style={{ flex: 1, backgroundColor: 'white' }} />
+    return isAuthenticated ? <BottomTabs/> : <AuthStack />
+  }
 
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
         <NavigationContainer>
-          <InicioSesionProvider>
-            {isAuthenticated ? <BottomTabs /> : <AuthStack />}
-          </InicioSesionProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
         </NavigationContainer>
       </View>
     </SafeAreaProvider>

@@ -56,7 +56,7 @@ async function getUsuario(req, res) { // testing
 
 async function getImagenUsuario(req, res) {
     try {
-        const id_usuario = req.usuario.id
+        const id_usuario = req.params.id
 
         const usuario = await Usuario.findByPk(id_usuario)
 
@@ -65,13 +65,7 @@ async function getImagenUsuario(req, res) {
         }
 
         const file = usuario.imagen_perfil
-        const imagePath = path.join(__dirname, '..', '..', 'uploads', 'users', file)
-
-        if (!fs.existsSync(imagePath)) {
-            return res.sendFile(path.join(__dirname, '..', '..', 'uploads', 'users', 'default.png'))
-        }
-
-        res.sendFile(imagePath)
+        res.status(200).json({url: `${req.protocol}://${req.get('host')}/uploads/users/${file}`})
 
     } catch (error) {
         response.error(res, 500, 'Error en el servidor al obtener la imagen')
