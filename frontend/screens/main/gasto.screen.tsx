@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
-import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import React from 'react'
 
-export default function AjustesScreen() {
+export default function GastoScreen() {
   return (
     <SafeAreaView>
       <View>
-        <Text>AjustesScreen</Text>
+        <Text>GastoScreen</Text>
       </View>
     </SafeAreaView>
   )
