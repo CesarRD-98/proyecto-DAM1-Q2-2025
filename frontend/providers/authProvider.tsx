@@ -6,7 +6,9 @@ import { API_URL } from '../services/api.url'
 import { UserModel } from '../models/userModel'
 import { GastosModel } from '../models/gastosModel'
 import { LoginResponse } from '../models/loginResponse'
-
+import { CategoriasModel } from '../models/categoriasModel'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
 
@@ -15,6 +17,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const [gastos, setGastos] = useState<GastosModel[]>([])
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [categorias, setCategorias] = useState<CategoriasModel[]>([])
 
     const validateToken = async () => {
         const token = await getToken();
@@ -33,14 +36,21 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
             const { usuario, presupuesto, ultimos_gastos } = resProfile.data.data
             const resImg = await axios.get(`${API_URL}/perfil-imagen/${usuario.id_usuario}`)
+            const resCat = await axios.get(`${API_URL}/categorias`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
 
+            setCategorias(resCat.data.data)
             setPresupuesto(parseFloat(presupuesto.monto))
+
+            const fechaISO: string = presupuesto.fecha_registro
+            const fechaFormateada: string = format(new Date(fechaISO), "d 'de' MMMM 'de' yyyy, h:mm a", { locale: es })
             setUsuario({
                 id_usuario: usuario.id_usuario,
                 primer_nombre: usuario.primer_nombre,
                 segundo_nombre: usuario.primer_apellido,
                 imagen_perfil: resImg.data.url,
-                presupuesto: presupuesto
+                fecha_presupuesto: fechaFormateada
             })
             setGastos(ultimos_gastos)
             setIsAuthenticated(true);
@@ -101,15 +111,16 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
     return (
         <AuthContext.Provider value={{
-             isAuthenticated, 
-             isLoading, 
-             presupuesto,
-             usuario,
-             gastos,
-             login,
-             logout,
-             refreshUser
-             }}>
+            isAuthenticated,
+            isLoading,
+            presupuesto,
+            usuario,
+            gastos,
+            categorias,
+            login,
+            logout,
+            refreshUser
+        }}>
             {children}
         </AuthContext.Provider>
     )

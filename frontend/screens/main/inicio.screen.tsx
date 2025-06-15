@@ -7,6 +7,8 @@ import { categoriaIconMap } from '../../utils/categoriaIcon'
 export default function InicioScreen() {
   const { presupuesto, usuario, gastos } = useAuth()
 
+  
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F3F4F6" />
@@ -20,7 +22,7 @@ export default function InicioScreen() {
               style={styles.profileImage}
             />
             <View>
-              <Text style={styles.greeting}>Bienvenido</Text>
+              <Text style={styles.greeting}>Hola</Text>
               <Text style={styles.userName}>{usuario?.primer_nombre} {usuario?.segundo_nombre}</Text>
             </View>
           </View>
@@ -30,12 +32,13 @@ export default function InicioScreen() {
         <View style={styles.budgetCard}>
           <Text style={styles.budgetTitle}>Tu presupuesto actual</Text>
           <Text style={styles.budgetAmount}>L. {presupuesto.toFixed(2)}</Text>
+          <Text style={styles.date}>{usuario?.fecha_presupuesto}</Text>
         </View>
 
         {/* Últimos gastos */}
         <View style={styles.gastos}>
           <Text style={styles.sectionTitle}>Últimos gastos</Text>
-          {gastos.map((t) => (
+          {gastos.length > 0 ? gastos.map((t) => (
             <View key={t.id_gasto} style={styles.gastoItem}>
               <View style={styles.iconContainer}>
                 {categoriaIconMap[t.categoria] || categoriaIconMap["Otros"]}
@@ -48,7 +51,9 @@ export default function InicioScreen() {
                 - L. {Math.abs(parseFloat(t.monto)).toFixed(2)}
               </Text>
             </View>
-          ))}
+          )): 
+          <Text style={styles.descripcion}>No tienes registros</Text>
+          }
         </View>
 
       </ScrollView>
@@ -96,7 +101,7 @@ const styles = StyleSheet.create({
   // Card de presupuesto
   budgetCard: {
     backgroundColor: '#1E293B',
-    borderRadius: 16,
+    borderRadius: 10,
     padding: 24,
     alignItems: 'center',
     marginBottom: 30,
@@ -108,7 +113,7 @@ const styles = StyleSheet.create({
   },
   budgetTitle: {
     fontSize: 16,
-    color: '#94A3B8',
+    color: '#CBD5E1',
     marginBottom: 6
   },
   budgetAmount: {
@@ -116,11 +121,15 @@ const styles = StyleSheet.create({
     color: '#34D399',
     fontWeight: 'bold'
   },
+  date: {
+    color: '#CBD5E1',
+    fontSize: 12
+  },
 
   // Lista de gastos
   gastos: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    borderRadius: 10,
     padding: 16,
     shadowColor: '#000',
     shadowOpacity: 0.04,

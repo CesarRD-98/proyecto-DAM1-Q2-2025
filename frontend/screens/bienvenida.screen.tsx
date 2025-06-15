@@ -67,12 +67,12 @@ const styles = StyleSheet.create({
     marginTop: 80
   },
   tagline: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
-    color: '#4B5563',
+    color: '#626F81',
     marginBottom: 40,
     lineHeight: 26,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   button: {
     width: '100%',
@@ -81,17 +81,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 4,
   },
   primaryButton: {
     backgroundColor: '#34D399',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
   },
   primaryButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
   },
@@ -101,8 +101,8 @@ const styles = StyleSheet.create({
     borderColor: '#34D399',
   },
   secondaryButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#34D399',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
 })

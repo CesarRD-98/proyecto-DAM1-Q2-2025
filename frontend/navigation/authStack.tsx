@@ -8,7 +8,6 @@ export type authStackParamList = {
   Bienvenida: undefined
   InicioSesion: undefined
   Registro: undefined
-  // Tabs: undefined
 }
 
 const Stack = createNativeStackNavigator<authStackParamList>()
@@ -18,7 +17,6 @@ export default function AuthStack() {
       <Stack.Screen name='Bienvenida' component={BienvenidaScreen} options={{ headerShown: false }} />
       <Stack.Screen name='InicioSesion' component={InicioSesion} options={{headerShown: false}}/>
       <Stack.Screen name='Registro' component={RegistroScreen} options={{headerShown: false}}/>
-      {/* <Stack.Screen name='Tabs' component={BottomTabs} options={{ headerShown: false }} /> */}
     </Stack.Navigator>
   )
 }
