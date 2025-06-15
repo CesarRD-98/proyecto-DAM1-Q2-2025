@@ -21,7 +21,7 @@ export const registroUsuario = async (
             return { success, message }
         }
 
-        return { success: false, message: 'No se logro finalizar el registro' }
+        return { success: false, message: 'No se logró finalizar el registro' }
     } catch (error: any) {
         if (axios.isAxiosError(error)) {
             if (error.response) {

@@ -18,7 +18,7 @@ async function getUsuario(req, res) { // testing
 
         const presupuesto = await Presupuesto.findOne({
             where: { id_usuario },
-            attributes: ['monto']
+            attributes: ['monto', 'fecha_registro']
         })
 
         const gastos = await Gasto.findAll({

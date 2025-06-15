@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 28,
-    gap: 4
+    gap: 6
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#111827'
   },
@@ -88,19 +88,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    borderRadius: 12,
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.03,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    elevation: 3,
     marginBottom: 10,
   },
   optionIcon: {
     marginRight: 12,
   },
   optionText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#374151',
     fontWeight: '500',
   },

@@ -50,7 +50,7 @@ export default function InicioSesionScreen({ navigation }: Props) {
       <Text style={styles.title}>Iniciar Sesión</Text>
       <Text style={styles.subtitle}>¡Bienvenido de nuevo!</Text>
 
-      <Text style={styles.label}>Email</Text>
+      <Text style={styles.label}>Email:</Text>
       <TextInput
         style={styles.input}
         placeholder="tuemail@ejemplo.com"
@@ -60,7 +60,7 @@ export default function InicioSesionScreen({ navigation }: Props) {
         onChangeText={setEmail}
       />
 
-      <Text style={styles.label}>Contraseña</Text>
+      <Text style={styles.label}>Contraseña:</Text>
       <TextInput
         style={styles.input}
         placeholder="Tú contraseña"
@@ -68,13 +68,6 @@ export default function InicioSesionScreen({ navigation }: Props) {
         value={password}
         onChangeText={setPassword}
       />
-
-      {/* <TouchableOpacity
-        style={styles.forgotPasswordButton}
-        onPress={() => Alert.alert('Recuperar Contraseña', 'Funcionalidad pendiente.')}
-      >
-        <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
-      </TouchableOpacity> */}
 
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
@@ -106,19 +99,19 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#1F2937',
     marginTop: 60,
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#6B7280',
     marginBottom: 40,
   },
   label: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#374151',
     marginBottom: 8,
     fontWeight: '600',
@@ -129,13 +122,18 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     maxWidth: 400,
-    padding: 15,
+    padding: 14,
     borderWidth: 1,
     borderColor: '#D1D5DB',
     borderRadius: 10,
     marginBottom: 20,
     backgroundColor: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
   },
   forgotPasswordButton: {
     alignSelf: 'flex-end',
@@ -151,7 +149,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: '#34D399',
-    paddingVertical: 18,
+    paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
     width: '100%',
@@ -161,11 +159,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 6,
-    elevation: 8,
+    elevation: 4,
   },
   loginButtonText: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   signupPrompt: {
@@ -173,11 +171,11 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   signupText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#6B7280',
   },
   signupLink: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#2563EB',
     fontWeight: 'bold',
   },

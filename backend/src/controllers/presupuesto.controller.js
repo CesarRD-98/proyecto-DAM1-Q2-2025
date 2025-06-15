@@ -22,6 +22,7 @@ async function addPresupuesto(req, res) {
 
         presupuesto_usuario.nombre_presupuesto = nombre_presupuesto
         presupuesto_usuario.notas = notas || ''
+        presupuesto_usuario.fecha_registro = Date.now()
 
         await presupuesto_usuario.save()
 
