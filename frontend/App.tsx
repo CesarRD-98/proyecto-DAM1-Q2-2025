@@ -5,13 +5,14 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthStack from './navigation/authStack';
 import BottomTabs from './navigation/bottomTabs';
 import AuthProvider, { useAuth } from './providers/authProvider';
+import { GastosProvider } from './providers/gastosProvider';
 
 export default function App() {
 
   function AppContent() {
-    const { isAuthenticated, isLoading } = useAuth()
-    if (isLoading) return <View style={{ flex: 1, backgroundColor: 'white' }} />
-    return isAuthenticated ? <BottomTabs/> : <AuthStack />
+    const { isAuthenticated, isLoading } = useAuth();
+    if (isLoading) return <View style={{ flex: 1, backgroundColor: 'white' }} />;
+    return isAuthenticated ? <BottomTabs /> : <AuthStack />;
   }
 
   return (
@@ -20,7 +21,9 @@ export default function App() {
         {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
         <NavigationContainer>
           <AuthProvider>
-            <AppContent />
+            <GastosProvider>
+              <AppContent />
+            </GastosProvider>
           </AuthProvider>
         </NavigationContainer>
       </View>
@@ -34,4 +37,3 @@ const styles = StyleSheet.create({
     minHeight: Platform.OS === 'web' ? Dimensions.get('window').height : undefined
   },
 });
-
