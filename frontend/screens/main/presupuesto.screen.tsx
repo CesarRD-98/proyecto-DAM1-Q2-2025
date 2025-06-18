@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard,ScrollView} from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useState } from 'react'
 import { useAuth } from '../../providers/authProvider'
@@ -50,55 +50,64 @@ export default function PresupuestoScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView>
-        <View style={styles.header}>
-        <Ionicons name='pie-chart-outline' size={20} />
-        <Text style={styles.title}>Nuevo presupuesto</Text>
-      </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView style={{ flex: 1 }}>
+            <View style={styles.container}>
+              <View style={styles.header}>
+                <Ionicons name='pie-chart-outline' size={20} />
+                <Text style={styles.title}>Nuevo presupuesto</Text>
+              </View>
 
-      <View style={styles.card}>
-        <Text style={styles.subtitle}>Tu presupuesto actual</Text>
-        <Text style={styles.amount}>L. {presupuesto.toFixed(2)}</Text>
-      </View>
+              <View style={styles.card}>
+                <Text style={styles.subtitle}>Tu presupuesto actual</Text>
+                <Text style={styles.amount}>L. {presupuesto.toFixed(2)}</Text>
+              </View>
 
-      <View>
-        <Text style={styles.label}>Título</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Ej. Quincena de Enero"
-          value={nombrePresupuesto}
-          onChangeText={setNombrePresupuesto}
-        />
+              <View>
+                <Text style={styles.label}>Título</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ej. Quincena de Enero"
+                  value={nombrePresupuesto}
+                  onChangeText={setNombrePresupuesto}
+                />
 
-        <Text style={styles.label}>Monto</Text>
-        <TextInput
-          style={styles.input}
-          inputMode='decimal'
-          keyboardType="numeric"
-          placeholder="Ej. 500"
-          value={monto}
-          onChangeText={setMonto}
-        />
+                <Text style={styles.label}>Monto</Text>
+                <TextInput
+                  style={styles.input}
+                  inputMode='decimal'
+                  keyboardType="numeric"
+                  placeholder="Ej. 500"
+                  value={monto}
+                  onChangeText={setMonto}
+                />
 
-        <Text style={styles.label}>Notas</Text>
-        <TextInput
-          style={[styles.input, styles.textarea]}
-          placeholder="Notas adicionales..."
-          multiline
-          numberOfLines={4}
-          textAlignVertical='top'
-          value={notas}
-          onChangeText={setNotas}
-        />
+                <Text style={styles.label}>Notas</Text>
+                <TextInput
+                  style={[styles.input, styles.textarea]}
+                  placeholder="Notas adicionales..."
+                  multiline
+                  numberOfLines={4}
+                  textAlignVertical='top'
+                  value={notas}
+                  onChangeText={setNotas}
+                />
 
-        <TouchableOpacity style={styles.button} onPress={handlePresupuesto}>
-          <Text style={styles.buttonText}>Guardar</Text>
-        </TouchableOpacity>
-      </View>
-      </ScrollView>
-      </TouchableWithoutFeedback>
+                <TouchableOpacity style={styles.button} onPress={handlePresupuesto}>
+                  <Text style={styles.buttonText}>Guardar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+
     </SafeAreaView>
   )
 }

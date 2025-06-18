@@ -9,6 +9,8 @@ import {
   Image,
   TouchableWithoutFeedback,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ScrollView } from 'react-native';
@@ -78,51 +80,65 @@ const PerfilScreen = ({ navigation }: Props) => {
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Ionicons name="arrow-back-outline" size={28} color="#6B7280" />
       </TouchableOpacity>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      >
 
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView style={styles.container}>
-          <Text style={styles.sectionTitle}>Foto de Perfil</Text>
-          {usuario?.imagen_perfil ? (
-            <Image
-              source={{ uri: usuario.imagen_perfil }}
-              style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 16 }}
-            />
-          ) : (
-            <Text style={styles.placeholder}>No hay foto disponible</Text>
-          )}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ flex: 1 }} >
+          <View style={{flex: 1}}>
+            <View style={styles.header}>
+              <Ionicons name='person-outline' size={20} />
+              <Text style={styles.headerTitle}>Perfil</Text>
+            </View>
+            <ScrollView style={{ flex: 1 }}>
+              <View style={styles.container}>
+                <Text style={styles.sectionTitle}>Foto de Perfil</Text>
+                {usuario?.imagen_perfil ? (
+                  <Image
+                    source={{ uri: usuario.imagen_perfil }}
+                    style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 16 }}
+                  />
+                ) : (
+                  <Text style={styles.placeholder}>No hay foto disponible</Text>
+                )}
 
-          <Text style={styles.sectionTitle}>Actualizar Nombres</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Primer nombre"
-            value={primerNombre}
-            onChangeText={setPrimerNombre}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Primer apellido"
-            value={primerApellido}
-            onChangeText={setPrimerApellido}
-          />
-          <TouchableOpacity style={styles.button} onPress={handleActualizarNombre}>
-            <Text style={styles.buttonText}>Guardar nombres</Text>
-          </TouchableOpacity>
+                <Text style={styles.sectionTitle}>Actualizar Nombres</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Primer nombre"
+                  value={primerNombre}
+                  onChangeText={setPrimerNombre}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Primer apellido"
+                  value={primerApellido}
+                  onChangeText={setPrimerApellido}
+                />
+                <TouchableOpacity style={styles.button} onPress={handleActualizarNombre}>
+                  <Text style={styles.buttonText}>Guardar nombres</Text>
+                </TouchableOpacity>
 
-          <Text style={styles.sectionTitle}>Actualizar Foto</Text>
-          {imagen && (
-            <Image
-              source={{ uri: imagen.uri }}
-              style={{ width: 100, height: 100, marginBottom: 12, borderRadius: 50 }}
-            />
-          )}
-          <TouchableOpacity style={styles.button} onPress={seleccionarImagen}>
-            <Text style={styles.buttonText}>Seleccionar imagen</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleActualizarFoto}>
-            <Text style={styles.buttonText}>Subir imagen</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </TouchableWithoutFeedback>
+                <Text style={styles.sectionTitle}>Actualizar Foto</Text>
+                {imagen && (
+                  <Image
+                    source={{ uri: imagen.uri }}
+                    style={{ width: 100, height: 100, marginBottom: 12, borderRadius: 50 }}
+                  />
+                )}
+                <TouchableOpacity style={styles.button} onPress={seleccionarImagen}>
+                  <Text style={styles.buttonText}>Seleccionar imagen</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={handleActualizarFoto}>
+                  <Text style={styles.buttonText}>Subir imagen</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -131,13 +147,28 @@ export default PerfilScreen;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    paddingHorizontal: 16,
     backgroundColor: '#fff',
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+    marginBottom: 28,
+    gap: 6
+  },
+  headerTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#111827'
+  },
   backButton: {
-    padding: 10,
-    marginLeft: 10,
-    marginTop: 10,
+    position: 'absolute',
+    top: Platform.OS === 'web' ? 40 : 50,
+    left: 20,
+    zIndex: 1,
+    padding: 5,
   },
   sectionTitle: {
     fontSize: 18,

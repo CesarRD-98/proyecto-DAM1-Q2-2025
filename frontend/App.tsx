@@ -17,25 +17,16 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
-        <NavigationContainer>
-          <AuthProvider>
-            <PerfilProvider>
-              <GastosProvider>
-                <AppContent />
-              </GastosProvider>
-            </PerfilProvider>
-          </AuthProvider>
-        </NavigationContainer>
-      </View>
+      {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
+      <NavigationContainer>
+        <AuthProvider>
+          <PerfilProvider>
+            <GastosProvider>
+              <AppContent />
+            </GastosProvider>
+          </PerfilProvider>
+        </AuthProvider>
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    minHeight: Platform.OS === 'web' ? Dimensions.get('window').height : undefined,
-  },
-});

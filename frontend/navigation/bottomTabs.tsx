@@ -4,22 +4,24 @@ import InicioScreen from "../screens/main/inicio.screen";
 import GastoScreen from "../screens/main/gasto.screen";
 import PresupuestoScreen from "../screens/main/presupuesto.screen";
 import AjustesNavigator from "./ajustesNavigator";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Tabs = createBottomTabNavigator()
 export default function BottomTabs() {
+  const insets = useSafeAreaInsets()
   return (
     <Tabs.Navigator
       screenOptions={({ route }) => ({
-        headerShown: false, 
-        tabBarShowLabel: true, 
-        tabBarActiveTintColor: '#34D399', 
-        tabBarInactiveTintColor: '#6B7280', 
+        headerShown: false,
+        tabBarShowLabel: true,
+        tabBarActiveTintColor: '#34D399',
+        tabBarInactiveTintColor: '#6B7280',
         tabBarStyle: {
           backgroundColor: '#fff',
-          height: 100,
+          height: 60 + insets.bottom,
           borderTopWidth: 1,
           borderTopColor: '#E5E7EB',
-          paddingBottom: 8,
+          paddingBottom: insets.bottom,
           paddingTop: 4,
         },
         tabBarIcon: ({ color, size }) => {
@@ -39,9 +41,9 @@ export default function BottomTabs() {
       })}
     >
       <Tabs.Screen name="Inicio" component={InicioScreen} />
-      <Tabs.Screen name="Nuevo gasto" component={GastoScreen}/>
-      <Tabs.Screen name="Presupuesto" component={PresupuestoScreen}/>
-      <Tabs.Screen name="Ajustes" component={AjustesNavigator}/>
+      <Tabs.Screen name="Nuevo gasto" component={GastoScreen} />
+      <Tabs.Screen name="Presupuesto" component={PresupuestoScreen} />
+      <Tabs.Screen name="Ajustes" component={AjustesNavigator} />
     </Tabs.Navigator>
   )
 }

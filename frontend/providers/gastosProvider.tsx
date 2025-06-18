@@ -13,7 +13,7 @@ interface GastosContextProps {
 export const GastosContext = createContext<GastosContextProps>({
   gastos: [],
   loading: false,
-  fetchGastos: () => {},
+  fetchGastos: () => { },
 });
 
 export const GastosProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -24,6 +24,7 @@ export const GastosProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setLoading(true);
     try {
       const token = await getToken();
+      if (!token) return
       const response = await axios.get(`${API_URL}/gastos`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -34,7 +35,17 @@ export const GastosProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setGastos(response.data.data.gastos);
       }
     } catch (error) {
-      console.error('Error al obtener el historial de gastos:', error);
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          if (error.response.status === 401) {
+            console.warn('Sesion expirada');
+            return
+          }
+          if (error.response.status === 500) {
+            console.warn('No hubo respuesta del servidro')
+          }
+        }
+      }
     } finally {
       setLoading(false);
     }
