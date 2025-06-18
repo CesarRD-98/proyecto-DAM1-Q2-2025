@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard,ScrollView} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useState } from 'react'
 import { useAuth } from '../../providers/authProvider'
@@ -51,7 +51,9 @@ export default function PresupuestoScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ScrollView>
+        <View style={styles.header}>
         <Ionicons name='pie-chart-outline' size={20} />
         <Text style={styles.title}>Nuevo presupuesto</Text>
       </View>
@@ -95,6 +97,8 @@ export default function PresupuestoScreen() {
           <Text style={styles.buttonText}>Guardar</Text>
         </TouchableOpacity>
       </View>
+      </ScrollView>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   )
 }

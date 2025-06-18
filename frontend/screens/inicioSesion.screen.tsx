@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
-  Dimensions
+  Dimensions,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useState } from 'react'
@@ -18,7 +21,7 @@ import { useAuth } from '../providers/authProvider'
 
 type Props = NativeStackScreenProps<authStackParamList, 'InicioSesion'>
 export default function InicioSesionScreen({ navigation }: Props) {
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, refreshUser } = useAuth()
@@ -41,44 +44,50 @@ export default function InicioSesionScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
       {/* Botón de volver */}
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Ionicons name="arrow-back-outline" size={28} color="#6B7280" />
       </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Text style={styles.title}>Iniciar Sesión</Text>
+          <Text style={styles.subtitle}>¡Bienvenido de nuevo!</Text>
 
-      <Text style={styles.title}>Iniciar Sesión</Text>
-      <Text style={styles.subtitle}>¡Bienvenido de nuevo!</Text>
+          <Text style={styles.label}>Email:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="tuemail@ejemplo.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
 
-      <Text style={styles.label}>Email:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="tuemail@ejemplo.com"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-      />
+          <Text style={styles.label}>Contraseña:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Tú contraseña"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
 
-      <Text style={styles.label}>Contraseña:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Tú contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
-      </TouchableOpacity>
-
-      <View style={styles.signupPrompt}>
-        <Text style={styles.signupText}>¿No tienes una cuenta?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Registro')}>
-          <Text style={styles.signupLink}> Regístrate</Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.signupPrompt}>
+            <Text style={styles.signupText}>¿No tienes una cuenta?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Registro')}>
+              <Text style={styles.signupLink}> Regístrate</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   )
 }

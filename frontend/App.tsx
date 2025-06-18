@@ -6,9 +6,9 @@ import AuthStack from './navigation/authStack';
 import BottomTabs from './navigation/bottomTabs';
 import AuthProvider, { useAuth } from './providers/authProvider';
 import { GastosProvider } from './providers/gastosProvider';
+import { PerfilProvider } from './providers/perfilProvider';
 
 export default function App() {
-
   function AppContent() {
     const { isAuthenticated, isLoading } = useAuth();
     if (isLoading) return <View style={{ flex: 1, backgroundColor: 'white' }} />;
@@ -21,9 +21,11 @@ export default function App() {
         {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
         <NavigationContainer>
           <AuthProvider>
-            <GastosProvider>
-              <AppContent />
-            </GastosProvider>
+            <PerfilProvider>
+              <GastosProvider>
+                <AppContent />
+              </GastosProvider>
+            </PerfilProvider>
           </AuthProvider>
         </NavigationContainer>
       </View>
@@ -34,6 +36,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    minHeight: Platform.OS === 'web' ? Dimensions.get('window').height : undefined
+    minHeight: Platform.OS === 'web' ? Dimensions.get('window').height : undefined,
   },
 });
