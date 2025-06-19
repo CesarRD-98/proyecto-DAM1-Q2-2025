@@ -6,23 +6,29 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { API_URL } from '../../services/api.url';
 import { getToken } from '../../utils/tokenStorage';
 import { categoriaIconMap } from '../../utils/categoriaIcon';
 import { PieChart } from 'react-native-chart-kit';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { authStackParamListAjustes } from '../../navigation/ajustesNavigator';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 const screenWidth = Dimensions.get('window').width;
+type Props = NativeStackScreenProps<authStackParamListAjustes, 'Estadisticas'>
 
-const EstadisticasScreen = () => {
+const EstadisticasScreen = ({ navigation }: Props) => {
   const [desde, setDesde] = useState(new Date());
   const [hasta, setHasta] = useState(new Date());
   const [pickerMode, setPickerMode] = useState<'desde' | 'hasta' | null>(null);
   const [gastos, setGastos] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const insets = useSafeAreaInsets()
 
   const fetchEstadisticas = async () => {
     setLoading(true);
@@ -67,85 +73,96 @@ const EstadisticasScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <ScrollView style={styles.container}>
-        <Text style={styles.sectionTitle}>Filtrar por fechas</Text>
-
-        <View style={styles.dateRow}>
-          <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => setPickerMode('desde')}
-          >
-            <Text style={styles.dateText}>Desde: {formatFecha(desde)}</Text>
-            <Ionicons name="calendar-outline" size={20} color="#333" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => setPickerMode('hasta')}
-          >
-            <Text style={styles.dateText}>Hasta: {formatFecha(hasta)}</Text>
-            <Ionicons name="calendar-outline" size={20} color="#333" />
-          </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Ionicons name="arrow-back-outline" size={28} color="#6B7280" />
+      </TouchableOpacity>
+      <View style={{ paddingBottom: insets.bottom }}>
+        <View style={styles.header}>
+          <Ionicons name='bar-chart-outline' size={20} />
+          <Text style={styles.headerTitle}>Estadisticas</Text>
         </View>
+        <ScrollView keyboardShouldPersistTaps='handled'>
+          <View style={styles.container}>
+            <Text style={styles.sectionTitle}>Filtrar por fechas</Text>
 
-        <DateTimePickerModal
-          isVisible={pickerMode !== null}
-          mode="date"
-          onConfirm={(date) => {
-            if (pickerMode === 'desde') setDesde(date);
-            if (pickerMode === 'hasta') setHasta(date);
-            setPickerMode(null);
-          }}
-          onCancel={() => setPickerMode(null)}
-          date={pickerMode === 'desde' ? desde : hasta}
-        />
+            <View style={styles.dateRow}>
+              <TouchableOpacity
+                style={styles.dateButton}
+                onPress={() => setPickerMode('desde')}
+              >
+                <Text style={styles.dateText}>Desde: {formatFecha(desde)}</Text>
+                <Ionicons name="calendar-outline" size={20} color="#333" />
+              </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={fetchEstadisticas}>
-          <Text style={styles.buttonText}>Aplicar Filtro</Text>
-        </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.dateButton}
+                onPress={() => setPickerMode('hasta')}
+              >
+                <Text style={styles.dateText}>Hasta: {formatFecha(hasta)}</Text>
+                <Ionicons name="calendar-outline" size={20} color="#333" />
+              </TouchableOpacity>
+            </View>
 
-        {gastos.length > 0 && (
-          <>
-            <Text style={styles.sectionTitle}>Distribución de gastos</Text>
-            <PieChart
-              data={totalPorCategoria}
-              width={screenWidth - 32}
-              height={220}
-              chartConfig={{
-                color: () => '#000',
-                backgroundColor: '#fff',
-                backgroundGradientFrom: '#fff',
-                backgroundGradientTo: '#fff',
-                decimalPlaces: 2,
+            <DateTimePickerModal
+              isVisible={pickerMode !== null}
+              mode="date"
+              onConfirm={(date) => {
+                if (pickerMode === 'desde') setDesde(date);
+                if (pickerMode === 'hasta') setHasta(date);
+                setPickerMode(null);
               }}
-              accessor="amount"
-              backgroundColor="transparent"
-              paddingLeft="15"
-              absolute
+              onCancel={() => setPickerMode(null)}
+              date={pickerMode === 'desde' ? desde : hasta}
             />
 
-            <Text style={styles.sectionTitle}>Detalle por categoría</Text>
-            {gastos.map((g) => (
-              <View key={g.codigo_categoria} style={styles.gastoItem}>
-                <View style={styles.iconContainer}>
-                  {categoriaIconMap[g.categoria] || categoriaIconMap['Otros']}
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.descripcion}>{g.categoria}</Text>
-                  <Text style={styles.categoria}>
-                    {g.cantidad} gasto{g.cantidad !== 1 ? 's' : ''}
-                  </Text>
-                </View>
-                <Text style={styles.total}>L. {parseFloat(g.total).toFixed(2)}</Text>
-              </View>
-            ))}
-          </>
-        )}
+            <TouchableOpacity style={styles.button} onPress={fetchEstadisticas}>
+              <Text style={styles.buttonText}>Aplicar Filtro</Text>
+            </TouchableOpacity>
 
-        {gastos.length === 0 && !loading && (
-          <Text style={styles.placeholder}>No hay datos para mostrar.</Text>
-        )}
-      </ScrollView>
+            {gastos.length > 0 && (
+              <>
+                <Text style={styles.sectionTitle}>Distribución de gastos</Text>
+                <PieChart
+                  data={totalPorCategoria}
+                  width={screenWidth - 32}
+                  height={220}
+                  chartConfig={{
+                    color: () => '#000',
+                    backgroundColor: '#fff',
+                    backgroundGradientFrom: '#fff',
+                    backgroundGradientTo: '#fff',
+                    decimalPlaces: 2,
+                  }}
+                  accessor="amount"
+                  backgroundColor="transparent"
+                  paddingLeft="15"
+                  absolute
+                />
+
+                <Text style={styles.sectionTitle}>Detalle por categoría</Text>
+                {gastos.map((g) => (
+                  <View key={g.codigo_categoria} style={styles.gastoItem}>
+                    <View style={styles.iconContainer}>
+                      {categoriaIconMap[g.categoria] || categoriaIconMap['Otros']}
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.descripcion}>{g.categoria}</Text>
+                      <Text style={styles.categoria}>
+                        {g.cantidad} gasto{g.cantidad !== 1 ? 's' : ''}
+                      </Text>
+                    </View>
+                    <Text style={styles.total}>L. {formatCurrency(parseFloat(g.total))}</Text>
+                  </View>
+                ))}
+              </>
+            )}
+
+            {gastos.length === 0 && !loading && (
+              <Text style={styles.placeholder}>No hay datos para mostrar.</Text>
+            )}
+          </View>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -158,12 +175,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   container: {
-    padding: 16,
+    flex: 1,
+    paddingHorizontal: 14,
+  },
+  backButton: {
+    position: 'absolute',
+    top: Platform.OS === 'web' ? 40 : 50,
+    left: 20,
+    zIndex: 1,
+    padding: 5,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+    marginBottom: 22,
+    gap: 6
+  },
+  headerTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#111827'
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 12,
+    marginBottom: 12,
   },
   dateRow: {
     flexDirection: 'row',

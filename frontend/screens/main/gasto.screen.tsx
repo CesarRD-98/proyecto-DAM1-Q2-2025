@@ -38,12 +38,13 @@ export default function GastoScreen() {
   }
 
   function validarCampos(): boolean {
+    const montoParse = parseFloat(monto)
     if (!nombreGasto.trim()) {
       Alert.alert('Alerta', 'El campo Nombre es obligatorio')
       return false
     }
-    if (isNaN(parseFloat(monto))) {
-      Alert.alert('Alerta', 'El campo Monto es obligatorio')
+    if (isNaN(montoParse) || montoParse <= 0) {
+      Alert.alert('Alerta', 'El campo Monto es obligatorio y debe ser mayor a L.0')
       return false
     }
     if (categoriaSeleccionada === null) {

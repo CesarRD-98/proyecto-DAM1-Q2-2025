@@ -25,12 +25,8 @@ export default function PresupuestoScreen() {
       Alert.alert('Alerta', 'El campo Titulo es obligatorio')
       return false
     }
-    if (isNaN(montoValidado)) {
-      Alert.alert('Alerta', 'El campo Monto es obligatorio')
-      return false
-    }
-    if (montoValidado <= 0) {
-      Alert.alert('Alerta', 'Ingrese un monto mayor a 0')
+    if (isNaN(montoValidado) || montoValidado <= 0) {
+      Alert.alert('Alerta', 'El campo Monto es obligatorio y debe ser mayor a L.0')
       return false
     }
     return true
@@ -66,7 +62,7 @@ export default function PresupuestoScreen() {
 
               <View style={styles.card}>
                 <Text style={styles.subtitle}>Tu presupuesto actual</Text>
-                <Text style={styles.amount}>L. {presupuesto.toFixed(2)}</Text>
+                <Text style={styles.amount}>L. {presupuesto}</Text>
               </View>
 
               <View>

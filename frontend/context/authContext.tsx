@@ -7,7 +7,7 @@ import { CategoriasModel } from "../models/categoriasModel";
 interface AuthType {
     isAuthenticated: boolean
     isLoading: boolean
-    presupuesto: number,
+    presupuesto: string,
     usuario: UserModel | null,
     gastos: GastosModel[],
     categorias: CategoriasModel[],

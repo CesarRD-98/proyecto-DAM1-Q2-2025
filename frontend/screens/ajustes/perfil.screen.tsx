@@ -11,7 +11,6 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Dimensions,
   Modal,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -22,27 +21,28 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { authStackParamListAjustes } from '../../navigation/ajustesNavigator';
 import { usePerfil } from '../../providers/perfilProvider';
 import { useAuth } from '../../providers/authProvider';
+import { eliminarCuenta } from '../../services/eliminarCuenta';
 
 type Props = NativeStackScreenProps<authStackParamListAjustes, 'Perfil'>;
+type modalType = 'image' | 'names'
 
 const PerfilScreen = ({ navigation }: Props) => {
   const [primerNombre, setPrimerNombre] = useState('');
   const [primerApellido, setPrimerApellido] = useState('');
   const [imagen, setImagen] = useState<any>(null);
-  const [modalVisible, setModalVisible] = useState(false)
-  const [modalVisibleNames, setModalVisibleNames] = useState(false)
+  const [modalTipo, setModalTipo] = useState<modalType | null>(null)
 
   const { actualizarNombre, actualizarFoto } = usePerfil();
   const { refreshUser, usuario } = useAuth();
   const insets = useSafeAreaInsets()
 
   const handleActualizarNombre = async () => {
-    if (!primerNombre || !primerApellido) {
+    if (!primerNombre.trim() || !primerApellido.trim()) {
       Alert.alert('Error', 'Ingrese ambos nombres.');
       return;
     }
 
-    const exito = await actualizarNombre(primerNombre, primerApellido);
+    const exito = await actualizarNombre(primerNombre.trim(), primerApellido.trim());
     if (exito) {
       await refreshUser();
       Alert.alert('Éxito', 'Nombre actualizado correctamente');
@@ -57,6 +57,7 @@ const PerfilScreen = ({ navigation }: Props) => {
     const resultado = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
+      allowsEditing: true
     });
 
     if (!resultado.canceled) {
@@ -70,6 +71,7 @@ const PerfilScreen = ({ navigation }: Props) => {
       return;
     }
 
+
     const exito = await actualizarFoto(imagen.uri);
     if (exito) {
       await refreshUser();
@@ -79,6 +81,34 @@ const PerfilScreen = ({ navigation }: Props) => {
       Alert.alert('Error', 'No se pudo actualizar la imagen');
     }
   };
+
+  const handleEliminarCuenta = () => {
+    Alert.alert(
+      '¡Atención!',
+      'Esta acción eliminará tu cuenta permanentemente. \n\n¿Deseas continuar?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Eliminar',
+          onPress: async () => {
+            const { success, message } = await eliminarCuenta();
+            if (success) {
+              Alert.alert('Cuenta eliminada', message);
+              await refreshUser();
+            } else {
+              Alert.alert('Error', message);
+            }
+          },
+          style: 'destructive',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
 
 
 
@@ -109,19 +139,19 @@ const PerfilScreen = ({ navigation }: Props) => {
                 ) : (
                   <Text style={styles.placeholder}>No hay foto disponible</Text>
                 )}
-                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <TouchableOpacity onPress={() => setModalTipo('image')}>
                   <Text style={styles.signupLink}>Actualizar imagen</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.divider} />
-              <View style={{ flex: 1, width: '100%', flexDirection: 'row', gap: 10, alignItems: 'center', marginLeft: 20, paddingVertical: 10 }}>
+              <View style={styles.inlineRowData}>
                 <Ionicons name='person-outline' size={24} />
                 <View>
                   <Text style={{ fontSize: 16 }}>Nombre</Text>
-                  <Text style={{ color: '#45556c' }}>{usuario?.primer_nombre} {usuario?.segundo_nombre}</Text>
+                  <Text style={{ color: '#45556c' }}>{usuario?.primer_nombre} {usuario?.primer_apellido}</Text>
                 </View>
               </View>
-              <View style={{ flex: 1, width: '100%', flexDirection: 'row', gap: 10, alignItems: 'center', marginLeft: 20, paddingVertical: 10 }}>
+              <View style={styles.inlineRowData}>
                 <Ionicons name='mail-outline' size={24} />
                 <View>
                   <Text style={{ fontSize: 16 }}>Correo</Text>
@@ -129,70 +159,70 @@ const PerfilScreen = ({ navigation }: Props) => {
                 </View>
               </View>
               <View style={{ alignItems: 'center' }}>
-                <TouchableOpacity onPress={() => setModalVisibleNames(true)}>
+                <TouchableOpacity onPress={() => setModalTipo('names')}>
                   <Text style={styles.signupLink}>Actualizar nombre</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.divider} />
               <View style={{ alignItems: 'center', marginTop: 30 }}>
-                <TouchableOpacity style={styles.optionItem}>
+                <TouchableOpacity style={styles.optionItem} onPress={handleEliminarCuenta}>
                   <Ionicons name='close-outline' color={'#EF4444'} size={22} />
                   <Text style={styles.textDeleteOption}>Eliminar cuenta</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
-            <Modal visible={modalVisible} transparent animationType="fade">
+            <Modal visible={modalTipo !== null} transparent animationType="fade">
               <View style={styles.modalOverlay}>
                 <View style={styles.modalContainer}>
                   <Text style={styles.modalText}>Actualizar Foto</Text>
-                  {imagen && (
+                  {modalTipo === 'image' && (
                     <>
-                      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Image
-                          source={{ uri: imagen.uri }}
-                          style={{ width: 150, height: 150, marginBottom: 12, borderRadius: 75 }}
-                        />
-                        <View style={{ flexDirection: 'row', gap: 10 }}>
-                          <TouchableOpacity style={[styles.button, styles.buttonPut]} onPress={handleActualizarFoto}>
-                            <Text style={styles.buttonText}>Actualizar imagen</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={[styles.button, styles.buttonDelete]} onPress={() => setImagen(null)}>
-                            <Text style={styles.buttonText}>Eliminar selección</Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
+                      {imagen && (
+                        <>
+                          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Image
+                              source={{ uri: imagen.uri }}
+                              style={styles.previewImage}
+                            />
+                            <View style={{ flexDirection: 'row', gap: 10 }}>
+                              <TouchableOpacity style={[styles.button, styles.buttonPut]} onPress={handleActualizarFoto}>
+                                <Text style={styles.buttonText}>Actualizar imagen</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity style={[styles.button, styles.buttonDelete]} onPress={() => setImagen(null)}>
+                                <Text style={styles.buttonText}>Eliminar selección</Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </>
+                      )}
+                      <TouchableOpacity style={styles.button} onPress={seleccionarImagen}>
+                        <Text style={styles.buttonText}>Seleccionar imagen</Text>
+                      </TouchableOpacity>
                     </>
                   )}
-                  <TouchableOpacity style={styles.button} onPress={seleccionarImagen}>
-                    <Text style={styles.buttonText}>Seleccionar imagen</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalClose}>
-                    <Text style={styles.modalCloseText}>Cancelar</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Modal>
-            <Modal visible={modalVisibleNames} transparent animationType="fade">
-              <View style={styles.modalOverlay}>
-                <View style={styles.modalContainer}>
-                  <Text style={styles.sectionTitle}>Actualizar Nombres</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Primer nombre"
-                    value={primerNombre}
-                    onChangeText={setPrimerNombre}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Primer apellido"
-                    value={primerApellido}
-                    onChangeText={setPrimerApellido}
-                  />
-                  <TouchableOpacity style={styles.button} onPress={handleActualizarNombre}>
-                    <Text style={styles.buttonText}>Guardar nombres</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setModalVisibleNames(false)} style={styles.modalClose}>
+
+                  {modalTipo === 'names' && (
+                    <>
+                      <Text style={styles.sectionTitle}>Actualizar Nombres</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Primer nombre"
+                        value={primerNombre}
+                        onChangeText={setPrimerNombre}
+                      />
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Primer apellido"
+                        value={primerApellido}
+                        onChangeText={setPrimerApellido}
+                      />
+                      <TouchableOpacity style={styles.button} onPress={handleActualizarNombre}>
+                        <Text style={styles.buttonText}>Guardar nombres</Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                  <TouchableOpacity onPress={() => setModalTipo(null)} style={styles.modalClose}>
                     <Text style={styles.modalCloseText}>Cancelar</Text>
                   </TouchableOpacity>
                 </View>
@@ -243,17 +273,25 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   input: {
+    backgroundColor: '#FFFFFF',
+    padding: 14,
+    fontSize: 14,
+    borderRadius: 10,
+    marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 10,
-    marginBottom: 12,
+    borderColor: '#D1D5DB',
+    color: '#111827',
+    shadowColor: '#000',
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
   },
   button: {
     backgroundColor: '#007AFF',
-    padding: 12,
+    padding: 14,
     borderRadius: 10,
-    marginBottom: 16,
+    marginVertical: 16,
     alignItems: 'center',
   },
   buttonPut: {
@@ -303,7 +341,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#F3F4F6',
     padding: 16,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
@@ -335,5 +373,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#cad5e2',
     borderRadius: 2,
     marginVertical: 20
-  }
+  },
+  inlineRowData: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+    marginLeft: 20,
+    paddingVertical: 10,
+  },
+  inputImagePreview: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  previewImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 12,
+    borderRadius: 75,
+  },
 });

@@ -1,16 +1,18 @@
 import React, { createContext, useContext } from 'react';
 import { API_URL } from '../services/api.url';
 import { getToken } from '../utils/tokenStorage';
+import axios from 'axios';
+import { ResponseModel } from '../models/response';
 
 interface PerfilContextProps {
   actualizarNombre: (primer_nombre: string, primer_apellido: string) => Promise<boolean>;
-  actualizarContrasena: (actual: string, nueva: string) => Promise<boolean>;
+  actualizarContrasena: (actual: string, nueva: string) => Promise<ResponseModel>;
   actualizarFoto: (imagenUri: string) => Promise<boolean>;
 }
 
 const PerfilContext = createContext<PerfilContextProps>({
   actualizarNombre: async () => false,
-  actualizarContrasena: async () => false,
+  actualizarContrasena: async () => ({ success: true }),
   actualizarFoto: async () => false,
 });
 
@@ -18,13 +20,10 @@ export const PerfilProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const actualizarNombre = async (primer_nombre: string, primer_apellido: string): Promise<boolean> => {
     try {
       const token = await getToken();
-      await fetch(`${API_URL}/perfil-nombre`, {
-        method: 'PUT',
+      await axios.put(`${API_URL}/perfil-nombre`, { primer_nombre, primer_apellido }, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ primer_nombre, primer_apellido }),
       });
       return true;
     } catch (error) {
@@ -33,24 +32,28 @@ export const PerfilProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  const actualizarContrasena = async (actual: string, nueva: string): Promise<boolean> => {
+  const actualizarContrasena = async (
+    actual_contrasena: string,
+    nueva_contrasena: string
+  ): Promise<ResponseModel> => {
     try {
       const token = await getToken();
-      await fetch(`${API_URL}/perfil-contrasena`, {
-        method: 'PUT',
+      await axios.put(`${API_URL}/perfil-contrasena`, { actual_contrasena, nueva_contrasena }, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          actual_contrasena: actual,
-          nueva_contrasena: nueva,
-        }),
       });
-      return true;
-    } catch (error) {
-      console.error('Error al actualizar contraseña:', error);
-      return false;
+      return { success: true, message: 'Contraseñas actualizadas correctamente' }
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          if (error.response.status === 401) {
+            return { success: false, message: 'Contraseña actual no coincide' }
+          }
+        }
+      }
+      console.warn('Error al actualizar contraseña:', error);
+      return { success: false, message: 'No hubo respuesta del servidor' };
     }
   };
 
@@ -66,16 +69,15 @@ export const PerfilProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         type: `image/${ext}`,
       } as any);
 
-      const res = await fetch(`${API_URL}/perfil-imagen/`, {
-        method: 'PUT',
+
+      const res = await axios.put(`${API_URL}/perfil-imagen`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
-        body: formData,
       });
 
-      return res.ok;
+      return true;
     } catch (error) {
       console.error('Error al subir imagen:', error);
       return false;

@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import React from 'react'
 import { useAuth } from '../../providers/authProvider'
 import { categoriaIconMap } from '../../utils/categoriaIcon'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 export default function InicioScreen() {
   const { presupuesto, usuario, gastos } = useAuth()
@@ -23,7 +24,7 @@ export default function InicioScreen() {
             />
             <View>
               <Text style={styles.greeting}>Hola</Text>
-              <Text style={styles.userName}>{usuario?.primer_nombre} {usuario?.segundo_nombre}</Text>
+              <Text style={styles.userName}>{usuario?.primer_nombre} {usuario?.primer_apellido}</Text>
             </View>
           </View>
         </View>
@@ -31,7 +32,7 @@ export default function InicioScreen() {
         {/* Presupuesto actual */}
         <View style={styles.budgetCard}>
           <Text style={styles.budgetTitle}>Tu presupuesto actual</Text>
-          <Text style={styles.budgetAmount}>L. {presupuesto.toFixed(2)}</Text>
+          <Text style={styles.budgetAmount}>L. {presupuesto}</Text>
           <Text style={styles.date}>{usuario?.fecha_presupuesto}</Text>
         </View>
 
@@ -48,7 +49,7 @@ export default function InicioScreen() {
                 <Text style={styles.categoria}>{t.categoria}</Text>
               </View>
               <Text style={[styles.monto, styles.expenseText]}>
-                - L. {Math.abs(parseFloat(t.monto)).toFixed(2)}
+                - L. {formatCurrency(parseFloat(t.monto))}
               </Text>
             </View>
           )): 

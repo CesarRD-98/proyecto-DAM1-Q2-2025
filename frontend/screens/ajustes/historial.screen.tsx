@@ -18,6 +18,7 @@ import { authStackParamListAjustes } from '../../navigation/ajustesNavigator'
 import { BottomTabBar } from '@react-navigation/bottom-tabs'
 import { useAuth } from '../../providers/authProvider'
 import { Inspect } from 'lucide-react-native'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 type Props = NativeStackScreenProps<authStackParamListAjustes, 'Historial'>
 
@@ -77,7 +78,7 @@ const HistorialScreen = ({ navigation }: Props) => {
                     <Text style={styles.categoria}>{item.categoria}</Text>
                   </View>
                   <Text style={styles.monto}>
-                    - L. {parseFloat(item.monto).toFixed(2)}
+                    - L. {formatCurrency(parseFloat(item.monto))}
                   </Text>
                 </View>
               )}

@@ -9,11 +9,12 @@ import { LoginResponse } from '../models/loginResponse'
 import { CategoriasModel } from '../models/categoriasModel'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { formatCurrency } from '../utils/formatCurrency'
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const [usuario, setUsuario] = useState<UserModel | null>(null)
-    const [presupuesto, setPresupuesto] = useState(0)
+    const [presupuesto, setPresupuesto] = useState('')
     const [gastos, setGastos] = useState<GastosModel[]>([])
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -40,15 +41,17 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                 headers: { 'Authorization': `Bearer ${token}` }
             })
 
+            const presupuestoFormateado = formatCurrency(parseFloat(presupuesto.monto))
+
             setCategorias(resCat.data.data)
-            setPresupuesto(parseFloat(presupuesto.monto))
+            setPresupuesto(presupuestoFormateado)
 
             const fechaISO: string = presupuesto.fecha_registro
             const fechaFormateada: string = format(new Date(fechaISO), "d 'de' MMMM 'de' yyyy, h:mm a", { locale: es })
             setUsuario({
                 id_usuario: usuario.id_usuario,
                 primer_nombre: usuario.primer_nombre,
-                segundo_nombre: usuario.primer_apellido,
+                primer_apellido: usuario.primer_apellido,
                 correo_electronico: usuario.correo_electronico,
                 imagen_perfil: resImg.data.url,
                 fecha_presupuesto: fechaFormateada
