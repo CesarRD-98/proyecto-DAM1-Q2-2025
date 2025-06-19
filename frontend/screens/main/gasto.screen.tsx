@@ -122,7 +122,7 @@ export default function GastoScreen() {
           <Text style={styles.buttonText}>Guardar</Text>
         </TouchableOpacity>
 
-        {/* Modal de selección de categoría */}
+
         <Modal visible={modalVisible} transparent animationType="fade">
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>

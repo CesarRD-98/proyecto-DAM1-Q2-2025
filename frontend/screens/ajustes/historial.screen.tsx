@@ -8,7 +8,7 @@ import {
   Platform,
   ActivityIndicator
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { GastosContext } from '../../providers/gastosProvider'
 import { categoriaIconMap } from '../../utils/categoriaIcon'
@@ -16,12 +16,18 @@ import { TabActions, useFocusEffect } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { authStackParamListAjustes } from '../../navigation/ajustesNavigator'
 import { BottomTabBar } from '@react-navigation/bottom-tabs'
+import { useAuth } from '../../providers/authProvider'
+import { Inspect } from 'lucide-react-native'
 
 type Props = NativeStackScreenProps<authStackParamListAjustes, 'Historial'>
 
 const HistorialScreen = ({ navigation }: Props) => {
   const { gastos, loading, fetchGastos } = useContext(GastosContext)
   const [loadingLocal, setLoadingLocal] = useState(true)
+  const { isAuthenticated } = useAuth()
+  const insets = useSafeAreaInsets()
+
+  if (!isAuthenticated) return
 
   useFocusEffect(
     useCallback(() => {
@@ -35,7 +41,7 @@ const HistorialScreen = ({ navigation }: Props) => {
   }, [])
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <SafeAreaView style={{ flex: 1, paddingBottom: insets.bottom, backgroundColor: '#fff' }}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Ionicons name="arrow-back-outline" size={28} color="#6B7280" />
       </TouchableOpacity>
@@ -45,7 +51,7 @@ const HistorialScreen = ({ navigation }: Props) => {
           <Text style={styles.headerTitle}>Historial de gastos</Text>
         </View>
 
-        <View style={styles.containerItems}>
+        <View>
           {loadingLocal || loading ? (
             <>
               <View style={styles.loadingContainer}>
@@ -89,10 +95,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F3F4F6',
-  },
-  containerItems: {
-    paddingTop: 8,
-    marginBottom: 32
   },
   header: {
     flexDirection: 'row',

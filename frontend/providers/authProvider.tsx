@@ -49,6 +49,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                 id_usuario: usuario.id_usuario,
                 primer_nombre: usuario.primer_nombre,
                 segundo_nombre: usuario.primer_apellido,
+                correo_electronico: usuario.correo_electronico,
                 imagen_perfil: resImg.data.url,
                 fecha_presupuesto: fechaFormateada
             })

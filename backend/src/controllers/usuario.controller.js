@@ -9,7 +9,7 @@ async function getUsuario(req, res) { // testing
         const id_usuario = req.usuario.id
 
         const usuario = await Usuario.findByPk(id_usuario, {
-            attributes: ['id_usuario', 'primer_nombre', 'primer_apellido']
+            attributes: ['id_usuario', 'primer_nombre', 'primer_apellido', 'correo_electronico']
         })
 
         if (!usuario) {

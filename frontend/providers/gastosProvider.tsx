@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_URL } from '../services/api.url'
 import { getToken } from '../utils/tokenStorage';
 import { GastosModel } from '../models/gastosModel';
+import { Alert } from 'react-native';
 
 interface GastosContextProps {
   gastos: GastosModel[];
@@ -24,7 +25,6 @@ export const GastosProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setLoading(true);
     try {
       const token = await getToken();
-      if (!token) return
       const response = await axios.get(`${API_URL}/gastos`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -51,9 +51,9 @@ export const GastosProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  useEffect(() => {
-    fetchGastos();
-  }, []);
+  // useEffect(() => {
+  //   fetchGastos();
+  // }, []);
 
   return (
     <GastosContext.Provider value={{ gastos, loading, fetchGastos }}>
